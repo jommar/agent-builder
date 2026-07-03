@@ -99,6 +99,27 @@ Find ways to measure success objectively.
 - Acceptance criteria used by similar tools
 - What "good enough" looks like in this domain
 
+### Step 6: Codebase Deep Dive (When Applicable)
+
+If the user provided a codebase path in Triage, analyze it alongside your web research. This grounds the agent/skill in the real code — conventions, tooling, and structure that dictate what it needs to know.
+
+**Analysis steps:**
+
+1. **Explore structure** — top-level directories, key folders (`src/`, `tests/`, `docs/`, `scripts/`), monorepo vs single-project layout
+2. **Identify tech stack** — package manager (`package.json`, `requirements.txt`, `Cargo.toml`, `go.mod`), language versions, major frameworks, build tools
+3. **Read config files** — linter config (`.eslintrc`, `.prettierrc`, etc.), CI pipelines (`.github/workflows/`, `Jenkinsfile`), TypeScript/compiler config, Docker setup
+4. **Understand testing** — test framework (Jest, pytest, etc.), test conventions, test file locations, coverage expectations
+5. **Note conventions** — naming patterns, file organization, import patterns, comment style, error handling approach
+6. **Map existing tools** — what scripts exist in `package.json`? What CLI tools does the project already use? This avoids reinventing or conflicting.
+
+**This analysis feeds into:**
+- **Tool selection** — tools the agent/skill needs to interact with the codebase (git, linters, test runners, build tools)
+- **Architecture pattern** — e.g., orchestrator-workers for multi-service repos, routing for projects with distinct modules
+- **Guardrails** — project-specific constraints (must use TypeScript strict mode, tests required per file, naming conventions)
+- **Success criteria** — concrete, codebase-specific metrics (tests pass, linting clean, build succeeds)
+
+**When to go deep vs quick:** For a simple skill (formatter, validator), a quick scan (package manager + top-level structure) is enough. For a complex agent (coding agent, deployment orchestrator), dig into configs, test patterns, and CI pipelines.
+
 ---
 
 ## Research Output Format
@@ -130,6 +151,13 @@ Produce a structured brief in this format:
 - [ ] Workflow (chaining / routing / parallelization)
 - [ ] Autonomous agent
 - [ ] Multi-agent system
+
+### Codebase Context (if applicable)
+- **Path:** `<path>`
+- **Tech stack:** <languages, frameworks, package manager>
+- **Test framework:** <jest, pytest, etc.>
+- **CI/CD:** <platform and pipeline>
+- **Key conventions:** <naming, file structure, linting rules>
 
 ### Key Research Sources
 - <url>

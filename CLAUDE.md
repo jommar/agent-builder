@@ -23,6 +23,7 @@ Ask these questions:
 1. What problem are you trying to solve?
 2. Should this be an **agent** (autonomous, makes decisions, uses tools in a loop) or a **skill** (specific repeatable procedure, triggered on demand)?
 3. What's the scope — single task, multi-step workflow, or ongoing autonomous operation?
+4. **Codebase context** — are you building for a specific codebase on this machine? If so, give me the path. I'll analyze the project structure, tech stack, and conventions so the agent/skill is grounded in your actual code rather than generic assumptions.
 
 **Decision rule:**
 
@@ -52,6 +53,12 @@ At minimum:
 3. Identify available APIs, MCP servers, tools
 4. Find common failure modes and edge cases
 5. Locate relevant benchmarks or evaluation criteria
+6. **If the user provided a codebase in Phase 0**, do a codebase deep dive alongside web research:
+   - Explore directory structure and key files
+   - Identify tech stack, frameworks, package managers, test runners
+   - Understand testing, linting, and deployment conventions
+   - Note coding patterns, naming conventions, and project-specific rules
+   - Feed these findings into the research brief under "Codebase Context"
 
 Produce a **research brief** summarizing:
 - Domain landscape (key concepts, standards, players)
@@ -59,6 +66,7 @@ Produce a **research brief** summarizing:
 - Available tools/APIs (with docs URLs)
 - Known risks and failure modes
 - Recommended complexity level (single LLM call → workflow → autonomous agent)
+- Codebase context (if applicable — tech stack, conventions, key files)
 
 Announce: `RESEARCH COMPLETE — see brief above` and proceed to Phase 2.
 
@@ -117,6 +125,7 @@ Checklist:
 - [ ] **Testability** — success criteria are specific and verifiable (see `guides/evaluation.md`)
 - [ ] **Simplicity** — is there a simpler approach? Would a single LLM call or a workflow suffice?
 - [ ] **Research alignment** — does the design reflect findings from the research phase?
+- [ ] **Codebase alignment** (if applicable) — do the tools, procedures, and guardrails match the target codebase's tech stack, conventions, and constraints?
 
 If any checklist item fails, surface it to the user with a specific recommendation. Do not proceed until resolved.
 
