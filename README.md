@@ -4,12 +4,87 @@ A guided workflow for designing and producing production-ready AI agents and ski
 
 ## Quick Start
 
-Open this directory in Claude Code or any AI tool that reads `CLAUDE.md`. Tell the AI what you want to build, and it handles the rest.
+Open this directory in Claude Code or any AI tool that reads `CLAUDE.md`. Tell the AI what you want to build, and it guides you through the process.
+
+### Example: Building a Code Review Agent
 
 ```
-User: "I need a data-pipeline agent that processes CSV uploads"
-AI: TRIAGE → RESEARCH → INTERVIEW → DESIGN REVIEW → OUTPUT → output/agents/data-pipeline.md
+USER: "I need an agent that reviews pull requests for security issues"
+
+AI: TRIAGE: agent — it makes independent decisions, uses tools in a loop,
+    and the scope is multi-step.
+
+    RESEARCHING... [searches web for code review best practices, existing
+    tools, common vulnerability patterns, available APIs]
+
+    RESEARCH COMPLETE — see brief above. Let's design the agent.
+
+    1. Name? code-security-reviewer
+    2. Role? Senior security engineer specializing in PR code review
+    3. Goal? Identify security vulnerabilities in PR diffs with
+       actionable fix recommendations
+    4. Backstory? You've reviewed 5000+ PRs across monorepos and
+       microservices. You know OWASP Top 10 cold. You prioritize
+       high-severity findings but flag medium ones with context.
+    5. Tools needed? GitHub API (read PRs, diffs, comments),
+       code search, SAST integration
+    6. Architecture? Orchestrator-workers — one agent dispatches
+       to specialized file reviewers
+    [... more interview questions ...]
+
+    DESIGN REVIEW: PASSED
+
+    OUTPUT GENERATED: output/agents/code-security-reviewer.md
 ```
+
+The generated definition includes the agent's role, goal, backstory, tools, architecture pattern, memory strategy, guardrails, and operating protocol — everything needed to deploy it.
+
+---
+
+## What You Get
+
+Each agent or skill is produced as a standalone markdown definition file with YAML frontmatter. Example agent output:
+
+```markdown
+---
+name: code-security-reviewer
+description: Reviews pull request diffs for security vulnerabilities
+tools:
+  - github_api
+  - code_search
+tools_description:
+  github_api: "Read PR diffs, comments, and file metadata"
+  code_search: "Search codebase for vulnerable patterns"
+architecture: orchestrator-workers
+memory: progress
+guardrails:
+  - Never approve or merge PRs — only comment
+  - Flag but don't fix — leave fixes to the author
+---
+
+You are a senior security engineer with deep expertise in PR review...
+
+## Goal
+
+Identify security vulnerabilities in pull request diffs and provide
+actionable, prioritized fix recommendations.
+
+## Tools
+
+github_api: Read PR details, diffs, and post review comments...
+code_search: Search the repository for known vulnerable patterns...
+
+## Operating Protocol
+
+1. Receive PR URL → fetch diff via github_api
+2. Classify changed files (auth, data, config, UI, tests)
+3. Route each file category to a specialized review pass
+...
+```
+
+Files land in `output/agents/` or `output/skills/` — drop them into any agent platform that supports markdown-based definitions.
+
+---
 
 ## Structure
 
