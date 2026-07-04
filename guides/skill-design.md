@@ -119,6 +119,19 @@ When designing a skill:
 - Document which skills naturally precede or follow it
 - Use consistent data formats (JSON, typed fields)
 
+## Skills vs Agent Skills
+
+This guide covers **standalone skills** — self-contained procedures with defined inputs, outputs, and triggers. There is also the related concept of **Agent Skills** (as defined by Anthropic, Oct 2025), which are domain-specific capability packages that agents can be equipped with at runtime.
+
+| | Standalone Skill (this guide) | Agent Skill (Anthropic, 2025) |
+|---|---|---|
+| Scope | Fixed procedure, single invocation | Domain expertise package for an agent |
+| Invocation | Triggered by keyword, intent, or command | Loaded into an agent's context at runtime |
+| State | Stateless or input-only | May carry persistent domain knowledge |
+| Example | "Format this CSV as JSON" | "You have legal-contract-review skills enabled" |
+
+When building a standalone skill that could also function as an agent capability, consider designing it with both patterns in mind: a clean input/output interface (for standalone invocation) plus embeddable domain instructions (for agent integration).
+
 ---
 
 ## Anti-Patterns

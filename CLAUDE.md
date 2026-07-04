@@ -82,14 +82,15 @@ Consult `guides/agent-design.md` for reference. Ask the user:
 2. **Role** — one sentence defining the agent's function and expertise
 3. **Goal** — the objective that guides all decision-making
 4. **Backstory** — context, personality, constraints that enrich behavior
-5. **Model** — which LLM? (claude-sonnet-4-6, claude-opus-4-5, gpt-4o, etc.)
-6. **Tools** — what tools does it need? List each tool and its purpose. Reference research phase.
-7. **Memory** — does it need session memory, progress tracking, or long-term knowledge storage?
-8. **Autonomy level** — fully autonomous, human-in-the-loop at checkpoints, or supervised?
-9. **Architecture pattern** — from `guides/agent-design.md`: prompt chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer, or autonomous agent?
-10. **Success criteria** — how do we know it's working? Specific, testable outcomes.
-11. **Guardrails** — what must it never do? Sensitive data, destructive operations, external API limits?
-12. **Integrations** — what external systems does it connect to? APIs, databases, MCP servers?
+5. **Tools** — what tools does it need? List each tool and its purpose. Reference research phase.
+6. **Memory** — does it need session memory, progress tracking, or long-term knowledge storage?
+7. **Autonomy level** — fully autonomous, human-in-the-loop at checkpoints, or supervised?
+8. **Architecture pattern** — from `guides/agent-design.md`: prompt chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer, or autonomous agent?
+9. **Success criteria** — how do we know it's working? Specific, testable outcomes.
+10. **Guardrails** — what must it never do? Sensitive data, destructive operations, external API limits?
+11. **Integrations** — what external systems does it connect to? APIs, databases, MCP servers?
+
+**Note on model selection:** Agents and skills are model-agnostic — they inherit whatever model the user is currently running. Do not assign or recommend a specific LLM. The definition should work with any capable model.
 
 ### If building a SKILL:
 
@@ -143,7 +144,6 @@ Generate file at `output/agents/<name>.md`:
 ---
 name: <agent-name>
 description: <one-sentence summary>
-model: <model-id>
 tools:
   - <tool-1>
   - <tool-2>

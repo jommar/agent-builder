@@ -182,3 +182,57 @@ See `guides/memory-patterns.md` for full details. Quick reference:
 - **Tool overload** — giving 20 tools when 3 would do. More tools = more decision errors.
 - **No termination condition** — agents that loop forever because they don't know when they're done
 - **Silent failures** — tools that return empty or error without the agent noticing
+
+---
+
+## Multi-Agent Systems
+
+When a single agent can't handle the task, consider splitting across multiple agents:
+
+```
+Orchestrator → Agent A (specialized domain) → Synthesize
+             → Agent B (specialized domain) →
+             → Agent C (specialized domain) →
+```
+
+**When to use:**
+- Tasks with distinctly different domains of expertise (e.g., legal review + code audit + UX analysis)
+- Workloads that benefit from parallel independent agents voting or cross-checking
+- Systems where no single prompt can cover all required expertise
+
+**Key design rules:**
+- **Clear handoffs** — each agent must know what it owns and what it passes downstream
+- **Shared state** — use structured formats (JSON with schema), not free text (see `guides/memory-patterns.md`)
+- **Identity tracking** — record which agent wrote what and when
+- **Single-writer principle** — avoid two agents writing to the same state simultaneously
+
+**Avoid when:** A single agent with well-designed tools and memory can handle the scope. Multi-agent systems compound debugging difficulty.
+
+---
+
+## Context Engineering
+
+Agent performance depends as much on context design as on prompt engineering. Context engineering is the practice of designing what information an agent sees at each decision point — prompts, tool results, memory state, and conversation history.
+
+**Key principles:**
+- **Minimize noise** — every token in the agent's context window competes for attention. Remove irrelevant tool results, stale conversation, and redundant information.
+- **Structure for scanning** — LLMs process context sequentially. Put critical instructions first, tool results with clear headers, and use consistent formatting. **Anthropic's research found that models can miss instructions buried in the middle of long contexts.**
+- **Progressive disclosure** — don't dump everything at once. Start with the task + key constraints, then reveal details as the agent investigates.
+- **State summaries** — for long-running agents, periodically summarize progress and compress older context to prevent context window overflow.
+
+See also: Anthropic's "Effective context engineering for AI agents" (Sep 2025).
+
+---
+
+## Tool Management at Scale
+
+When agents need access to many tools (10+), avoid loading all tool definitions into every prompt:
+
+| Strategy | How It Works | Best For |
+|----------|-------------|----------|
+| **MCP `defer_loading`** | Tool descriptions aren't sent to the model until explicitly loaded | MCP servers with many rarely-used tools |
+| **Tool Search** | A dedicated server tool discovers and loads tools on demand based on the query | Agents with 20+ tools across multiple domains |
+| **Namespace grouping** | Group related tools into named sets, loaded together | Moderate tool collections (10-30) |
+| **Dynamic tool discovery** | Agent uses a search/index tool to find the right tool before invoking it | Unbounded tool collections |
+
+The key insight: **more tools degrade decision quality.** Every additional tool description competes for the model's attention. Invest in tool discovery before adding more tools.

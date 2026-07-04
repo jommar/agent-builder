@@ -23,7 +23,7 @@ Search for the problem domain itself — not AI solutions yet, just the domain.
 - "how does [process] work in [industry]"
 - "[industry] standard workflow for [task]"
 - "common challenges in [domain]"
-- "[domain] best practices 2025"
+- "[domain] best practices 2026"
 - "[domain] compliance requirements"
 
 **Goal:** Understand the terminology, key concepts, standard workflows, and regulatory constraints before thinking about AI.
@@ -38,6 +38,7 @@ Search for existing AI agents, tools, or products that solve similar problems.
 - "open source [domain] agent"
 - "[tool name] review problems limitations"
 - "building an agent for [task] lessons learned"
+- "MCP server for [domain]"
 
 **For each solution found, assess:**
 - What does it do well?

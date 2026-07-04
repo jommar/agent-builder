@@ -39,19 +39,19 @@ Agents that forget everything between sessions are crippled. This guide covers w
 - Permanent knowledge storage
 - Cross-project information
 
-**Key patterns (from Anthropic's long-running agent research):**
+**Key patterns (from Anthropic's research on long-running agents — see "Effective harnesses for long-running agents", Nov 2025, and "Harness design for long-running application development", Mar 2026):**
 
 1. **Feature/Progress list** — a structured file (JSON or markdown checklist) tracking what's done and what remains
 2. **Progress log** — chronological entries: "Session #3: implemented auth module, tests passing"
 3. **Git commits** — descriptive commit messages serve as implicit progress log
 4. **Init/teardown scripts** — `init.sh` to set up the environment, `status.sh` for quick state check
 
-**Example `claude-progress.txt`:**
+**Example `progress.md`:**
 ```
-Session 1 (2025-07-01): Initial setup — project scaffolded, dependencies installed, init.sh created
-Session 2 (2025-07-01): Implemented task list CRUD API. 12/45 features passing.
-Session 3 (2025-07-02): Added task filtering and sorting. 18/45 features passing.
-Session 4 (2025-07-02): CURRENT — working on user authentication. Auth module partially done, DB schema ready, login endpoint WIP.
+Session 1 (2026-07-01): Initial setup — project scaffolded, dependencies installed, init script created
+Session 2 (2026-07-01): Implemented task list CRUD API. 12/45 features passing.
+Session 3 (2026-07-02): Added task filtering and sorting. 18/45 features passing.
+Session 4 (2026-07-02): CURRENT — working on user authentication. Auth module partially done, DB schema ready, login endpoint WIP.
 ```
 
 ### Tier 3: Knowledge Base (Long-Term)

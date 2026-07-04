@@ -118,7 +118,7 @@ Before integrating a tool into an agent:
 - **Start with 3–5 tools.** Add more only when needed.
 - **Too many tools = decision paralysis.** The model has to evaluate every tool on every turn.
 - **Group related tools under clear namespaces** (e.g., `file_read`, `file_write`, `file_delete`).
-- **Provide tool search/discovery** if >10 tools — an agent can't hold 20 tool descriptions in context effectively.
+- **Provide tool search/discovery** if >10 tools — an agent can't hold 20 tool descriptions in context effectively. Use the Tool Search server tool or MCP `defer_loading` to surface only relevant tools per query.
 
 ---
 
@@ -127,6 +127,26 @@ Before integrating a tool into an agent:
 | | Client Tools | Server Tools (Anthropic) |
 |---|---|---|
 | Execution | Your code | Anthropic's infrastructure |
-| Examples | Custom APIs, database queries | WebSearch, WebFetch, CodeExecution |
+| Examples | Custom APIs, database queries, MCP tools | WebSearch, WebFetch, CodeExecution, Advisor, ToolSearch, MCPConnector |
 | Cost | Token usage only | Token usage + per-use pricing |
 | Best for | Proprietary systems, internal APIs | Common operations, no infrastructure needed |
+
+### Anthropic Server Tools (Complete)
+
+| Tool | Purpose |
+|------|---------|
+| **Web Search** | Search the web for information beyond the model's knowledge cutoff, with cited sources |
+| **Web Fetch** | Retrieve full content of specified web pages and PDFs |
+| **Code Execution** | Run Python and bash in a sandboxed container for data analysis |
+| **Advisor** | Let a faster executor model consult a higher-intelligence advisor mid-generation |
+| **Tool Search** | Discover and load tools on demand from large tool collections (enables agents with dozens/hundreds of tools) |
+| **MCP Connector** | Connect to remote MCP servers directly from the API without a separate MCP client |
+
+## MCP Integration
+
+Model Context Protocol (MCP) is the standard for connecting agents to external tools, data sources, and services. When designing agent tools, consider:
+
+- **MCP servers** — pre-built connectors for common services (Jira, GitHub, Slack, databases, filesystems). Search the [MCP registry](https://modelcontextprotocol.io) before building custom tools.
+- **MCP Connector** — Anthropic's API natively connects to remote MCP servers via the `mcp_servers` parameter (beta). This eliminates the need for a separate MCP client in simple integrations.
+- **Client-side MCP** — when you need local STDIO servers, MCP prompts, or MCP resources, use the SDK helpers (`mcpTools()`, `mcpMessages()`) available in Python, TypeScript, Java, Go, Ruby, and PHP.
+- **Tool configuration** — MCP toolsets support allowlisting, denylisting, and per-tool `defer_loading` for large tool collections.

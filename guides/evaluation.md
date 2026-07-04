@@ -91,11 +91,29 @@ Verify:
 
 ### Level 5: Red-Teaming
 
-Apply your existing `jailbreak/` harness patterns:
+Apply red-team patterns to probe agent weaknesses:
 - Adversarial inputs designed to bypass guardrails
 - Prompt injection attempts
 - Requests for disallowed operations
 - Sensitive data extraction attempts
+- Tool misuse patterns (calling the wrong tool, calling tools with dangerous parameters)
+
+See also: Anthropic's "Demystifying evals for AI agents" (Jan 2026) for a structured approach to agent evaluation, and "Quantifying infrastructure noise in agentic coding evals" (Feb 2026) for understanding evaluation reliability.
+
+---
+
+## Agent Containment
+
+As agents grow more capable, containment becomes a critical evaluation dimension. An agent that works correctly but can escape its sandbox is not production-ready.
+
+**Key containment dimensions to test:**
+- **Filesystem boundaries** — can the agent access files outside its working directory?
+- **Network boundaries** — can it make unauthorized outbound connections?
+- **Tool permission escalation** — can it use a read-only tool to achieve write effects?
+- **Cross-session leakage** — does data from one user's session bleed into another's?
+- **Prompt extraction** — can an adversarial user extract the agent's system prompt?
+
+See also: Anthropic's "How we contain Claude across products" for production containment patterns.
 
 ---
 
@@ -153,6 +171,8 @@ if (confidence < threshold || operation_is_dangerous) {
     return "I'm not confident enough to proceed. Let me escalate this."
 }
 ```
+
+For autonomous agents in production, add containment boundaries as a second line of defense — even if the agent's guardrails fail, the sandbox limits the blast radius. See "Agent Containment" above.
 
 ---
 
