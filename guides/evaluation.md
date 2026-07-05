@@ -1,6 +1,7 @@
 # Evaluation & Testing Guide
 
-An agent is only as good as your ability to verify it works. This guide covers how to define success criteria, test agents rigorously, and build guardrails.
+An agent is only as good as your ability to verify it works. This guide covers how to define success
+criteria, test agents rigorously, and build guardrails.
 
 ---
 
@@ -9,25 +10,28 @@ An agent is only as good as your ability to verify it works. This guide covers h
 Every agent and skill must have testable success criteria. Vague goals produce unverifiable agents.
 
 **Bad:**
+
 - "The agent should be helpful"
 - "The output should be good"
 - "It should work most of the time"
 
 **Good:**
-- "The agent correctly classifies support tickets into 5 categories with >90% accuracy on a held-out test set of 500 tickets"
+
+- "The agent correctly classifies support tickets into 5 categories with >90% accuracy on a held-out
+  test set of 500 tickets"
 - "The data pipeline processes 10,000 rows in under 30 seconds with zero schema violations"
 - "The content writer produces copy that passes human review 80%+ on first submission"
 
 ### Criteria Types
 
-| Type | Example | Measures |
-|------|---------|----------|
-| **Accuracy** | "95% of SQL queries return correct results" | Correctness |
-| **Latency** | "Responds within 3 seconds for 95th percentile" | Speed |
-| **Cost** | "Average $0.02 per query" | Efficiency |
-| **Robustness** | "Handles malformed input without crashing" | Reliability |
-| **Coverage** | "Handles all 12 defined edge cases correctly" | Completeness |
-| **Safety** | "Never outputs PII or executes destructive commands" | Guardrails |
+| Type           | Example                                              | Measures     |
+| -------------- | ---------------------------------------------------- | ------------ |
+| **Accuracy**   | "95% of SQL queries return correct results"          | Correctness  |
+| **Latency**    | "Responds within 3 seconds for 95th percentile"      | Speed        |
+| **Cost**       | "Average $0.02 per query"                            | Efficiency   |
+| **Robustness** | "Handles malformed input without crashing"           | Reliability  |
+| **Coverage**   | "Handles all 12 defined edge cases correctly"        | Completeness |
+| **Safety**     | "Never outputs PII or executes destructive commands" | Guardrails   |
 
 ---
 
@@ -56,16 +60,16 @@ Create a test suite:
 [
   {
     "input": "What is the capital of France?",
-    "expected_tools": [],  // should not need tools for this
+    "expected_tools": [], // should not need tools for this
     "expected_contains": "Paris",
-    "expected_not_contains": ["I don't know", "Let me search"]
+    "expected_not_contains": ["I don't know", "Let me search"],
   },
   {
     "input": "Search the web for the latest TypeScript release",
     "expected_tools": ["web_search"],
     "expected_contains": ["TypeScript", "version"],
-    "max_duration_ms": 15000
-  }
+    "max_duration_ms": 15000,
+  },
 ]
 ```
 
@@ -73,9 +77,11 @@ Create a test suite:
 
 Test complete workflows that span multiple agent turns.
 
-Example: "A user reports a bug. The agent should: read the error log, search the codebase, propose a fix, and write a test."
+Example: "A user reports a bug. The agent should: read the error log, search the codebase, propose a
+fix, and write a test."
 
 Verify:
+
 - All expected tools were called
 - The fix is valid (test passes)
 - No unnecessary tools were called
@@ -92,28 +98,36 @@ Verify:
 ### Level 5: Red-Teaming
 
 Apply red-team patterns to probe agent weaknesses:
+
 - Adversarial inputs designed to bypass guardrails
 - Prompt injection attempts
 - Requests for disallowed operations
 - Sensitive data extraction attempts
 - Tool misuse patterns (calling the wrong tool, calling tools with dangerous parameters)
 
-See also: Anthropic's "Demystifying evals for AI agents" (Jan 2026) for a structured approach to agent evaluation, and "Quantifying infrastructure noise in agentic coding evals" (Feb 2026) for understanding evaluation reliability.
+For a structured approach to agent evaluation, look up evaluation frameworks and research papers for
+the platform selected in Phase 0 during Phase 1 research. Examples include Anthropic's "Demystifying
+evals for AI agents" (Jan 2026) and "Quantifying infrastructure noise in agentic coding evals" (Feb
+2026), OpenAI's evals framework, and LangSmith for LangChain-based agents.
 
 ---
 
 ## Agent Containment
 
-As agents grow more capable, containment becomes a critical evaluation dimension. An agent that works correctly but can escape its sandbox is not production-ready.
+As agents grow more capable, containment becomes a critical evaluation dimension. An agent that
+works correctly but can escape its sandbox is not production-ready.
 
 **Key containment dimensions to test:**
+
 - **Filesystem boundaries** — can the agent access files outside its working directory?
 - **Network boundaries** — can it make unauthorized outbound connections?
 - **Tool permission escalation** — can it use a read-only tool to achieve write effects?
 - **Cross-session leakage** — does data from one user's session bleed into another's?
 - **Prompt extraction** — can an adversarial user extract the agent's system prompt?
 
-See also: Anthropic's "How we contain Claude across products" for production containment patterns.
+See your platform's agent containment documentation for production containment patterns. Look this
+up during Phase 1 research. Examples include Anthropic's "How we contain Claude across products" and
+equivalent containment documentation for OpenAI, Google Vertex AI, and LangChain.
 
 ---
 
@@ -130,11 +144,13 @@ For agents that need to improve their own output:
 ```
 
 **When to use:**
+
 - Output quality is subjective but evaluatable (writing, translation, code)
 - Clear evaluation criteria can be defined
 - Iterative improvement is faster/cheaper than getting it right the first time
 
 **When not to use:**
+
 - Objective, deterministic tasks (math, data transforms)
 - Time-sensitive operations where latency matters
 - Tasks where the evaluator is as unreliable as the generator
@@ -146,17 +162,20 @@ For agents that need to improve their own output:
 Guardrails must operate at multiple levels:
 
 ### Input Guardrails (before the agent acts)
+
 - Reject obviously malicious or out-of-scope requests
 - Sanitize inputs (strip PII, normalize format)
 - Validate against schema
 
 ### Execution Guardrails (during agent operation)
+
 - Tool allowlists/blocklists
 - Permission tiers (read-only, read-write, destructive)
 - Rate limiting per tool
 - Budget caps (max tokens, max cost, max duration)
 
 ### Output Guardrails (before returning to user)
+
 - Filter PII and sensitive data
 - Validate output format
 - Fact-check critical claims against source
@@ -172,7 +191,8 @@ if (confidence < threshold || operation_is_dangerous) {
 }
 ```
 
-For autonomous agents in production, add containment boundaries as a second line of defense — even if the agent's guardrails fail, the sandbox limits the blast radius. See "Agent Containment" above.
+For autonomous agents in production, add containment boundaries as a second line of defense — even
+if the agent's guardrails fail, the sandbox limits the blast radius. See "Agent Containment" above.
 
 ---
 
