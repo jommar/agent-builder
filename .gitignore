@@ -3,3 +3,6 @@
 *.swo
 node_modules/
 .env
+
+# generated deliverable archives (regenerate from the source folders)
+output/*.zip
